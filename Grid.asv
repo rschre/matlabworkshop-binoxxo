@@ -4,6 +4,7 @@ classdef Grid
       values 
       options 
    end
+
     methods        
         function obj = Grid(size, options)
             if exist("size", "var")
@@ -20,37 +21,74 @@ classdef Grid
             end
         end
 
-        function gridCorrect = verifyGrid(obj)
-            
-            [colsCorrect, errorCols] = verifyCols(obj);
-            if not(colsCorrect)
-                disp("Error on columns: ");
-                disp(errorCols);
-                gridCorrect = false;
+        function verifyGrid(obj, app)
+            expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
+
+            gridFilled = ~any(strcmp(obj.values, ""), "all");
+            gridHasErrors = false;
+
+            if not(gridFilled)
+                uialert(app.UIFigure,"Fill out all fields before checking", "Input incomplete")
                 return
             end
+
+            [tripletRows, tripletCols] = checkTriplet(obj, expression);
+
+            [colsCorrect, errorCols] = verifyCols(obj, expression);
+            if not(colsCorrect)
+                uialert(app.UIFigure,"Error on column number: "+errorCols, "Input incorrect")
+                gridHasErrors = true;
+            end
             
-            [rowsCorrect, errorRows] = verifyRows(obj);
+            [rowsCorrect, errorRows] = verifyRows(obj, expression);
             if not(rowsCorrect)
-                disp("Error on rows: ");
-                disp(errorRows);
-                gridCorrect = false;
-                return
+                uialert(app.UIFigure,"Error on row number: "+errorRows, "Input incorrect")
+                gridHasErrors = true;
+            end
+
+            if not(gridHasErrors)
+                uialert(app.UIFigure,"You did it!", "Success", "Icon", "success")
             end
 
         end
 
-        function [colsCorrect, errorCols] = verifyCols(obj)
-
-            expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
+        function [tripletRows, tripletCols] = checkTriplets(obj, expression)
             errorCols = [];
 
-            obj.values(1,:) = "O"; % for test values
-            obj.values(2,:) = "O"; % for test values
-            obj.values(:,3) = "X"; % for test values
-            disp(obj.values)
 
-            % Join every column to a single string, save in cols
+            % Join every column to a single string, check regex
+            for i = 1:obj.size
+                col = obj.values(:,i).join("");
+                res = regexp(col, expression);
+                if(length(res) >= 1)
+                    errorCols(end+1) = i; %#ok<AGROW> 
+                end
+            end
+
+
+            errorRows = [];
+
+            % Join every row to a single string, check regex
+            for i = 1:obj.size
+                row = obj.values(i,:).join("");
+                res = regexp(row, expression);
+                if(length(res) >= 1)
+                    errorRows(end+1) = i; %#ok<AGROW> 
+                end
+            end
+
+            if isempty(errorRows)
+                rowsCorrect = true;
+            else 
+                rowsCorrect = false;
+            end
+        end
+
+        function [colsCorrect, errorCols] = verifyCols(obj, expression)
+
+            errorCols = [];
+
+            % Join every column to a single string, check regex
             for i = 1:obj.size
                 col = obj.values(:,i).join("");
                 res = regexp(col, expression);
@@ -64,22 +102,26 @@ classdef Grid
             else 
                 colsCorrect = false;
             end
+        end
             
-            function [rowsCorrect, errorRows] = verifyRows(obj, expression)
-
-            expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
+        function [rowsCorrect, errorRows] = verifyRows(obj, expression)
+        
             errorRows = [];
 
-            obj.values(1,:) = "O"; % for test values
-            obj.values(2,:) = "O"; % for test values
-            obj.values(:,3) = "X"; % for test values
-            disp(obj.values)
-            % Join rows to single strings
-%             for i = 1:obj.size
-%                 rows(i) = obj.values(:,i).join("");
-%             end
+            % Join every row to a single string, check regex
+            for i = 1:obj.size
+                row = obj.values(i,:).join("");
+                res = regexp(row, expression);
+                if(length(res) >= 1)
+                    errorRows(end+1) = i; %#ok<AGROW> 
+                end
+            end
 
+            if isempty(errorRows)
+                rowsCorrect = true;
+            else 
+                rowsCorrect = false;
+            end
         end
-
     end
 end
