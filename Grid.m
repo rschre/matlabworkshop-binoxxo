@@ -44,21 +44,7 @@ classdef Grid
                 gridHasErrors = true;
             end
 
-
-%             [colsCorrect, errorCols] = verifyCols(obj, expression);
-%             if not(colsCorrect)
-%                 uialert(app.UIFigure,"Error on column number: "+errorCols, "Input incorrect")
-%                 gridHasErrors = true;
-%             end
-%             
-%             [rowsCorrect, errorRows] = verifyRows(obj, expression);
-%             if not(rowsCorrect)
-%                 uialert(app.UIFigure,"Error on row number: "+errorRows, "Input incorrect")
-%                 gridHasErrors = true;
-%             end
-
             if gridHasErrors
-                disp(errorList)
                 uialert(app.UIFigure, errorList, "Input incorrect")
             else
                 uialert(app.UIFigure,"You did it!", "Success", "Icon", "success")
@@ -86,46 +72,6 @@ classdef Grid
                 if(length(res) >= 1)
                     tripletCols(end+1) = i; %#ok<AGROW> 
                 end
-            end
-        end
-
-        function [colsCorrect, errorCols] = verifyCols(obj, expression)
-
-            errorCols = [];
-
-            % Join every column to a single string, check regex
-            for i = 1:obj.size
-                col = obj.values(:,i).join("");
-                res = regexp(col, expression);
-                if(length(res) >= 1)
-                    errorCols(end+1) = i; %#ok<AGROW> 
-                end
-            end
-
-            if isempty(errorCols)
-                colsCorrect = true;
-            else 
-                colsCorrect = false;
-            end
-        end
-            
-        function [rowsCorrect, errorRows] = verifyRows(obj, expression)
-        
-            errorRows = [];
-
-            % Join every row to a single string, check regex
-            for i = 1:obj.size
-                row = obj.values(i,:).join("");
-                res = regexp(row, expression);
-                if(length(res) >= 1)
-                    errorRows(end+1) = i; %#ok<AGROW> 
-                end
-            end
-
-            if isempty(errorRows)
-                rowsCorrect = true;
-            else 
-                rowsCorrect = false;
             end
         end
     end
