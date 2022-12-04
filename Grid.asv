@@ -25,6 +25,8 @@ classdef Grid
             expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
 
             gridFilled = ~any(strcmp(obj.values, ""), "all");
+
+            errorList = strings(0);
             gridHasErrors = false;
 
             if not(gridFilled)
@@ -32,96 +34,74 @@ classdef Grid
                 return
             end
 
-            [tripletRows, tripletCols] = checkTriplet(obj, expression);
-
-            [colsCorrect, errorCols] = verifyCols(obj, expression);
-            if not(colsCorrect)
-                uialert(app.UIFigure,"Error on column number: "+errorCols, "Input incorrect")
+            % Section which handles triplets
+            [tripletRows, tripletCols] = checkTriplets(obj, expression);
+            if not(isempty(tripletRows))
+                errorList(end+1) = "Triplet on row number: "+tripletRows;
                 gridHasErrors = true;
             end
-            
-            [rowsCorrect, errorRows] = verifyRows(obj, expression);
-            if not(rowsCorrect)
-                uialert(app.UIFigure,"Error on row number: "+errorRows, "Input incorrect")
+            if not(isempty(tripletCols))
+                errorList(end+1) = "Triplet on column number: "+tripletCols;
                 gridHasErrors = true;
             end
 
-            if not(gridHasErrors)
+            % Section which handles equal number of every symbol
+
+            % Section which handles row or columns duplicates
+
+            if gridHasErrors
+                uialert(app.UIFigure, errorList, "Input incorrect")
+            else
                 uialert(app.UIFigure,"You did it!", "Success", "Icon", "success")
             end
 
         end
 
         function [tripletRows, tripletCols] = checkTriplets(obj, expression)
-            errorCols = [];
-
-
-            % Join every column to a single string, check regex
-            for i = 1:obj.size
-                col = obj.values(:,i).join("");
-                res = regexp(col, expression);
-                if(length(res) >= 1)
-                    errorCols(end+1) = i; %#ok<AGROW> 
-                end
-            end
-
-
-            errorRows = [];
-
-            % Join every row to a single string, check regex
-            for i = 1:obj.size
-                row = obj.values(i,:).join("");
-                res = regexp(row, expression);
-                if(length(res) >= 1)
-                    errorRows(end+1) = i; %#ok<AGROW> 
-                end
-            end
-
-            if isempty(errorRows)
-                rowsCorrect = true;
-            else 
-                rowsCorrect = false;
-            end
-        end
-
-        function [colsCorrect, errorCols] = verifyCols(obj, expression)
-
-            errorCols = [];
-
-            % Join every column to a single string, check regex
-            for i = 1:obj.size
-                col = obj.values(:,i).join("");
-                res = regexp(col, expression);
-                if(length(res) >= 1)
-                    errorCols(end+1) = i; %#ok<AGROW> 
-                end
-            end
-
-            if isempty(errorCols)
-                colsCorrect = true;
-            else 
-                colsCorrect = false;
-            end
-        end
+            tripletRows = [];
+            tripletCols = [];
             
-        function [rowsCorrect, errorRows] = verifyRows(obj, expression)
-        
-            errorRows = [];
-
             % Join every row to a single string, check regex
             for i = 1:obj.size
                 row = obj.values(i,:).join("");
                 res = regexp(row, expression);
                 if(length(res) >= 1)
-                    errorRows(end+1) = i; %#ok<AGROW> 
+                    tripletRows(end+1) = i; %#ok<AGROW> 
                 end
             end
 
-            if isempty(errorRows)
-                rowsCorrect = true;
-            else 
-                rowsCorrect = false;
+            % Same for columns
+            for i = 1:obj.size
+                col = obj.values(:,i).join("");
+                res = regexp(col, expression);
+                if(length(res) >= 1)
+                    tripletCols(end+1) = i; %#ok<AGROW> 
+                end
             end
+        end
+
+        function [duplicateRows, duplicateCols] = checkDuplicates(obj)
+            cols = strings(0);
+            rows = strings(0);
+            duplicateRows = [];
+            duplicateCols = [];
+            
+            % Join every row to a single string, save in rows
+            for i = 1:obj.size
+                row = obj.values(i,:).join("");
+                rows(end+1) = row;
+            end
+
+            % Same for columns
+            for i = 1:obj.size
+                col = obj.values(:,i).join("");
+                cols(end+1) = col;
+            end
+            
+            for i = 1:obj.size
+                if (sum(contains(rows, rows(i))))
+            end
+            
         end
     end
 end

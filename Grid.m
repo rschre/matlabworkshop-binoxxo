@@ -34,6 +34,7 @@ classdef Grid
                 return
             end
 
+            % Section which handles triplets
             [tripletRows, tripletCols] = checkTriplets(obj, expression);
             if not(isempty(tripletRows))
                 errorList(end+1) = "Triplet on row number: "+tripletRows;
@@ -43,6 +44,10 @@ classdef Grid
                 errorList(end+1) = "Triplet on column number: "+tripletCols;
                 gridHasErrors = true;
             end
+
+            % Section which handles equal number of every symbol
+
+            % Section which handles row or columns duplicates
 
             if gridHasErrors
                 uialert(app.UIFigure, errorList, "Input incorrect")
@@ -71,6 +76,34 @@ classdef Grid
                 res = regexp(col, expression);
                 if(length(res) >= 1)
                     tripletCols(end+1) = i; %#ok<AGROW> 
+                end
+            end
+        end
+
+        function [duplicateRows, duplicateCols] = checkDuplicates(obj)
+            cols = strings(0);
+            rows = strings(0);
+            duplicateRows = [];
+            duplicateCols = [];
+            
+            % Join every row to a single string, save in rows
+            for i = 1:obj.size
+                row = obj.values(i,:).join("");
+                rows(end+1) = row;
+            end
+
+            % Same for columns
+            for i = 1:obj.size
+                col = obj.values(:,i).join("");
+                cols(end+1) = col;
+            end
+            
+            for i = 1:obj.size
+                if sum(contains(rows, rows(i)))>1
+                    duplicateRows(end+1) = i;
+                end
+                if sum(contains(cols, cols(i)))>1
+                    duplicateCols(end+1) = i;
                 end
             end
         end
