@@ -1,0 +1,85 @@
+classdef Grid
+   properties
+      size {mustBeNumeric}
+      values 
+      options 
+   end
+    methods        
+        function obj = Grid(size, options)
+            if exist("size", "var")
+                obj.size = size;
+                obj.values = strings(size);
+            else
+                throw(MException("MATLAB:InputArgUndefined", ...
+                    "Grid size must be specified"));
+            end
+            if exist("options", "var")
+                obj.options = options;
+            else
+                obj.options = ["","O","X"];
+            end
+        end
+
+        function gridCorrect = verifyGrid(obj)
+            
+            [colsCorrect, errorCols] = verifyCols(obj);
+            if not(colsCorrect)
+                disp("Error on columns: ");
+                disp(errorCols);
+                gridCorrect = false;
+                return
+            end
+            
+            [rowsCorrect, errorRows] = verifyRows(obj);
+            if not(rowsCorrect)
+                disp("Error on rows: ");
+                disp(errorRows);
+                gridCorrect = false;
+                return
+            end
+
+        end
+
+        function [colsCorrect, errorCols] = verifyCols(obj)
+
+            expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
+            errorCols = [];
+
+            obj.values(1,:) = "O"; % for test values
+            obj.values(2,:) = "O"; % for test values
+            obj.values(:,3) = "X"; % for test values
+            disp(obj.values)
+
+            % Join every column to a single string, save in cols
+            for i = 1:obj.size
+                col = obj.values(:,i).join("");
+                res = regexp(col, expression);
+                if(length(res) >= 1)
+                    errorCols(end+1) = i; %#ok<AGROW> 
+                end
+            end
+
+            if isempty(errorCols)
+                colsCorrect = true;
+            else 
+                colsCorrect = false;
+            end
+            
+            function [rowsCorrect, errorRows] = verifyRows(obj, expression)
+
+            expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
+            errorRows = [];
+
+            obj.values(1,:) = "O"; % for test values
+            obj.values(2,:) = "O"; % for test values
+            obj.values(:,3) = "X"; % for test values
+            disp(obj.values)
+            % Join rows to single strings
+%             for i = 1:obj.size
+%                 rows(i) = obj.values(:,i).join("");
+%             end
+
+        end
+
+    end
+end
