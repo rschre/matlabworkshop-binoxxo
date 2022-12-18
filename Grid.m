@@ -102,7 +102,7 @@ classdef Grid
             for i = 1:obj.size
                 res = regexp(rows(i), expression);
                 if(length(res) >= 1)
-                    tripletRows(end+1) = i; %#ok<AGROW> 
+                    tripletRows(end+1) = i; 
                 end
             end
 
@@ -110,7 +110,7 @@ classdef Grid
             for i = 1:obj.size
                 res = regexp(cols(i), expression);
                 if(length(res) >= 1)
-                    tripletCols(end+1) = i; %#ok<AGROW> 
+                    tripletCols(end+1) = i;
                 end
             end
         end
@@ -125,7 +125,7 @@ classdef Grid
                 countO = count(rows(i), "O");
 
                 if countX ~= countO
-                    unevenRows(end+1) = i;
+                    unevenRows(end+1) = i; %#ok<*AGROW> 
                 end
             end
 
@@ -153,6 +153,15 @@ classdef Grid
                 if sum(contains(cols, cols(i)))>1
                     duplicateCols(end+1) = i;
                 end
+            end
+        end
+
+        function saveToFile(obj)
+            [file,path] = uiputfile("./save_files/*.txt");
+            if(file)
+                disp(file)
+                rows = obj.getRows();
+                writelines([obj.size; rows], strcat(path,file));
             end
         end
     end
