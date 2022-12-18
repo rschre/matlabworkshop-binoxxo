@@ -21,17 +21,36 @@ classdef Grid
             end
         end
 
-        function cols = getColumns(obj)
+        function cols = getColumns(obj, fillEmpty)
+            
+            % Set default of fillEmpty to false
+            if ~exist("fillEmpty", "var")
+                fillEmpty = false;
+            end
+              
             cols = strings(obj.size,1);
             for i = 1:obj.size
-                cols(i) = obj.values(:,i).join("");
+                v = obj.values(:,i);
+                if fillEmpty 
+                    v(v=="") = "-";
+                end
+                cols(i) = v.join("");
             end
         end
 
-        function rows = getRows(obj)
+        function rows = getRows(obj, fillEmpty)
+            % Set default of fillEmpty to false
+            if ~exist("fillEmpty", "var")
+                fillEmpty = false;
+            end
+
             rows = strings(obj.size,1);
             for i = 1:obj.size
-                rows(i) = obj.values(i,:).join("");
+                v = obj.values(i,:);
+                if fillEmpty 
+                    v(v=="") = "-";
+                end
+                rows(i) = v.join("");
             end
         end
 
