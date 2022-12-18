@@ -179,7 +179,7 @@ classdef Grid
             [file,path] = uiputfile("./save_files/*.txt");
             if(file)
                 disp(file)
-                rows = obj.getRows();
+                rows = obj.getRows(true);
                 writelines([obj.size; rows], strcat(path,file));
             end
         end
