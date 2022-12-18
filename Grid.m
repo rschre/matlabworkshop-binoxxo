@@ -21,6 +21,20 @@ classdef Grid
             end
         end
 
+        function cols = getColumns(obj)
+            cols = strings(obj.size,1);
+            for i = 1:obj.size
+                cols(i) = obj.values(:,i).join("");
+            end
+        end
+
+        function rows = getRows(obj)
+            rows = strings(obj.size,1);
+            for i = 1:obj.size
+                rows(i) = obj.values(i,:).join("");
+            end
+        end
+
         function verifyGrid(obj, app)
             expression = "(X{3,})|(O{3,})"; % Matches 3 or more of either X or O in a row
 
@@ -34,14 +48,8 @@ classdef Grid
                 return
             end
 
-            cols = strings(obj.size,1);
-            rows = strings(obj.size,1);
-            
-            % Join every row to a single string, save in rows
-            for i = 1:obj.size
-                rows(i) = obj.values(i,:).join("");
-                cols(i) = obj.values(:,i).join("");
-            end
+            cols = obj.getColumns();
+            rows = obj.getRows();
 
             % Section which handles triplets
             [tripletRows, tripletCols] = checkTriplets(obj, expression, rows, cols);
@@ -61,7 +69,7 @@ classdef Grid
                 gridHasErrors = true;
             end
             if not(isempty(unevenCols))
-                errorList = [errorList, "Rows don't have the same amount of both symbols: "+unevenCols];
+                errorList = [errorList, "Columns don't have the same amount of both symbols: "+unevenCols];
                 gridHasErrors = true;
             end
 
