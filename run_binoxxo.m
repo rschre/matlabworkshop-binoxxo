@@ -25,6 +25,16 @@ if main_menu.gridSize == 6
     end
     game = binoxxo_app(values);
 elseif main_menu.gridSize == 8
-    disp("loading 8 sized window")
+    switch main_menu.difficulty
+        case "easy"
+            values = readSaveFile(save_path+"8_easy.txt");
+        case "medium"
+            values = readSaveFile(save_path+"8_medium.txt");
+        case "hard"
+            values = readSaveFile(save_path+"8_hard.txt");
+        case "manual"
+            values = main_menu.fileValues;
+    end
+    game = binoxxo_app_8(values);
 end
 movegui(game.UIFigure, "center");
