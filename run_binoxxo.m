@@ -1,10 +1,10 @@
-%================================================================
+%==========================================================================
 % Eingangspunkt für Binoxxo-Spiel
 %   Name: run_binoxxo.m
 %   Bearbeiter: Raffael Schreiber
 %   Version: V1.0
 %   Datum: 25.12.2022
-%================================================================
+%==========================================================================
 % Benötigt Files:
 % classes/Grid.m
 % functions/readSaveFile.m
@@ -14,11 +14,11 @@
 % ui/Rules.mlapp
 % save_file/included/<SAVE_FILES> (SAVE_FILES: 6_easy.txt, 6_medium.txt,
 % 6_hard.txt, 8_easy.txt, 8_medium.txt, 8_hard.txt)
-%================================================================
+%==========================================================================
 % Zweck:
 % Öffnet Hauptmenu zur Spielauswahl, je nach Spielauswahl, wird as dazu
 % passende GUI geöffnet.
-%================================================================
+%==========================================================================
 
 % Initializations
 % -----------------
