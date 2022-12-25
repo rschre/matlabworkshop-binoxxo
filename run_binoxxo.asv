@@ -1,8 +1,10 @@
-main_menu = binoxxo_menu;
 
+% Initializations
+addpath('ui','functions','classes');
+main_menu = binoxxo_menu;
 movegui(main_menu.UIFigure, "center");
 main_menu.UIFigure.Visible = "on";
-save_path = "./save_files/included/";
+save_path = "./save_files/included/"; % where the predefined games are located
 
 try
     while main_menu.UIFigure.Visible == "on"
@@ -12,10 +14,7 @@ catch
     disp("Menu Window Terminated")
 end
 
-% try
-if main_menu.difficulty == "manual"
-    disp("loading file...")
-elseif main_menu.gridSize == 6
+if main_menu.gridSize == 6
     switch main_menu.difficulty
         case "easy"
             values = readSaveFile(save_path+"6_easy.txt");
@@ -24,28 +23,20 @@ elseif main_menu.gridSize == 6
         case "hard"
             values = readSaveFile(save_path+"6_hard.txt");
         case "manual"
-            values = main_menu.g
+            values = main_menu.fileValues;
     end
     game = binoxxo_app(values);
 elseif main_menu.gridSize == 8
-    disp("loading 8 sized window")
+    switch main_menu.difficulty
+        case "easy"
+            values = readSaveFile(save_path+"8_easy.txt");
+        case "medium"
+            values = readSaveFile(save_path+"8_medium.txt");
+        case "hard"
+            values = readSaveFile(save_path+"8_hard.txt");
+        case "manual"
+            values = main_menu.fileValues;
+    end
+    game = binoxxo_app_8(values);
 end
-
-
-
 movegui(game.UIFigure, "center");
-% catch
-%     disp("Game terminated");
-% end
-
-
-% if app.backToMenu == true
-%     movegui(main_menu.UIFigure, "center");
-%     main_menu.UIFigure.Visible = "on";
-% end
-%
-% while main_menu.UIFigure.Visible == "on"
-%     pause(0.5)
-% end
-%
-% disp("app closed")
