@@ -1,4 +1,24 @@
-
+%================================================================
+% Eingangspunkt für Binoxxo-Spiel
+%   Name: run_binoxxo.m
+%   Bearbeiter: Raffael Schreiber
+%   Version: V1.0
+%   Datum: 25.12.2022
+%================================================================
+% Benötigt Files:
+% classes/Grid.m
+% functions/readSaveFile.m
+% ui/binoxxo_app.mlapp
+% ui/binoxxo_app_8.mlapp
+% ui/binoxxo_menu.mlapp
+% ui/Rules.mlapp
+% save_file/included/<SAVE_FILES> (SAVE_FILES: 6_easy.txt, 6_medium.txt,
+% 6_hard.txt, 8_easy.txt, 8_medium.txt, 8_hard.txt)
+%================================================================
+% Zweck:
+% Öffnet Hauptmenu zur Spielauswahl, je nach Spielauswahl, wird as dazu
+% passende GUI geöffnet.
+%================================================================
 
 % Initializations
 % -----------------
@@ -23,31 +43,47 @@ end
 if main_menu.gridSize == 6
     % Switch between difficulty for included games
     % or load from personal save file
-    switch main_menu.difficulty
-        case "easy"
-            values = readSaveFile(save_path+"6_easy.txt");
-        case "medium"
-            values = readSaveFile(save_path+"6_medium.txt");
-        case "hard"
-            values = readSaveFile(save_path+"6_hard.txt");
-        case "manual"
-            values = main_menu.fileValues;
+    try
+        switch main_menu.difficulty
+            case "easy"
+                values = readSaveFile(save_path+"6_easy.txt");
+            case "medium"
+                values = readSaveFile(save_path+"6_medium.txt");
+            case "hard"
+                values = readSaveFile(save_path+"6_hard.txt");
+            case "manual"
+                values = main_menu.fileValues;
+        end
+        game = binoxxo_app(values); % Open game UI with corresponding values
+        movegui(game.UIFigure, "center");
+    catch ME
+        fig = uifigure;
+        uialert(fig, "Error loading game, make sure you're not missing files. Sync with https://github.com/rschre/matlabworkshop-binoxxo. You can also check the error message in the MATLAB command window.", "Error loading file",'CloseFcn',@(h,e) close(fig))
+        disp("Original error message:")
+        disp(ME.message)
     end
-    game = binoxxo_app(values); % Open game UI with corresponding values
+
 
 elseif main_menu.gridSize == 8
     % Switch between difficulty for included games
     % or load from personal save file
-    switch main_menu.difficulty
-        case "easy"
-            values = readSaveFile(save_path+"8_easy.txt");
-        case "medium"
-            values = readSaveFile(save_path+"8_medium.txt");
-        case "hard"
-            values = readSaveFile(save_path+"8_hard.txt");
-        case "manual"
-            values = main_menu.fileValues;
+    try
+        switch main_menu.difficulty
+            case "easy"
+                values = readSaveFile(save_path+"8_easy.txt");
+            case "medium"
+                values = readSaveFile(save_path+"8_medium.txt");
+            case "hard"
+                values = readSaveFile(save_path+"8_hard.txt");
+            case "manual"
+                values = main_menu.fileValues;
+        end
+        game = binoxxo_app_8(values); % Open game UI with corresponding values
+        movegui(game.UIFigure, "center");
+    catch ME
+        fig = uifigure;
+        uialert(fig, "Error loading game, make sure you're not missing files. Sync with https://github.com/rschre/matlabworkshop-binoxxo. You can also check the error message in the MATLAB command window.", "Error loading file",'CloseFcn',@(h,e) close(fig))
+        disp("Original error message:")
+        disp(ME.message)
     end
-    game = binoxxo_app_8(values); % Open game UI with corresponding values
 end
-movegui(game.UIFigure, "center");
