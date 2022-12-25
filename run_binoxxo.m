@@ -2,7 +2,7 @@ main_menu = binoxxo_menu;
 
 movegui(main_menu.UIFigure, "center");
 main_menu.UIFigure.Visible = "on";
-save_path = "./save_files/included/";
+save_path = "./save_files/included/"; % where the predefined games are located
 
 try
     while main_menu.UIFigure.Visible == "on"
