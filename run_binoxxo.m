@@ -37,6 +37,7 @@ try
     end
 catch
     disp("Menu Window Terminated") % graceful exit, if main menu is closed
+    return
 end
 
 % Choose different UI, depending on the selected game size (6x6 or 8x8)
