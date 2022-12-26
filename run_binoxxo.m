@@ -27,6 +27,7 @@ main_menu = binoxxo_menu; % main menu UI
 movegui(main_menu.UIFigure, "center");
 main_menu.UIFigure.Visible = "on";
 save_path = "./save_files/included/"; % where the predefined games are located
+manualGame = false;
 
 % Main Execution
 % -----------------
@@ -39,6 +40,8 @@ catch
     disp("Menu Window Terminated") % graceful exit, if main menu is closed
     return
 end
+
+
 
 % Choose different UI, depending on the selected game size (6x6 or 8x8)
 if main_menu.gridSize == 6
@@ -54,8 +57,9 @@ if main_menu.gridSize == 6
                 values = readSaveFile(save_path+"6_hard.txt");
             case "manual"
                 values = main_menu.fileValues;
+                manualGame = true;
         end
-        game = binoxxo_app(values); % Open game UI with corresponding values
+        game = binoxxo_app(values, manualGame); % Open game UI with corresponding values
         movegui(game.UIFigure, "center");
     catch ME
         fig = uifigure;
@@ -78,8 +82,9 @@ elseif main_menu.gridSize == 8
                 values = readSaveFile(save_path+"8_hard.txt");
             case "manual"
                 values = main_menu.fileValues;
+                manualGame = true;
         end
-        game = binoxxo_app_8(values); % Open game UI with corresponding values
+        game = binoxxo_app_8(values, manualGame); % Open game UI with corresponding values
         movegui(game.UIFigure, "center");
     catch ME
         fig = uifigure;
